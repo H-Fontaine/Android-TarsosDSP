@@ -4,7 +4,9 @@ This is a fork from this "commit":https://github.com/JorenSix/TarsosDSP/commit/d
 
 The library is working for those sdk thanks to the "ffmpeg-kit library":https://github.com/arthenica/ffmpeg-kit
 
+h3. How to use ?
 
+Add <  implementation 'com.arthenica:ffmpeg-kit-full:5.1'  > line in dependencies
 
 h1. FOLLOWING IS THE README OF THE ORIGINAL PROJECT
 
