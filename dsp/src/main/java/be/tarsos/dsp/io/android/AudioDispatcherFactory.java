@@ -1,33 +1,37 @@
 /*
-*      _______                       _____   _____ _____
-*     |__   __|                     |  __ \ / ____|  __ \
-*        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
-*        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/
-*        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |
-*        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|
-*
-* -------------------------------------------------------------
-*
-* TarsosDSP is developed by Joren Six at IPEM, University Ghent
-*
-* -------------------------------------------------------------
-*
-*  Info: http://0110.be/tag/TarsosDSP
-*  Github: https://github.com/JorenSix/TarsosDSP
-*  Releases: http://0110.be/releases/TarsosDSP/
-*
-*  TarsosDSP includes modified source code by various authors,
-*  for credits and info, see README.
-*
-*/
+ *      _______                       _____   _____ _____
+ *     |__   __|                     |  __ \ / ____|  __ \
+ *        | | __ _ _ __ ___  ___  ___| |  | | (___ | |__) |
+ *        | |/ _` | '__/ __|/ _ \/ __| |  | |\___ \|  ___/
+ *        | | (_| | |  \__ \ (_) \__ \ |__| |____) | |
+ *        |_|\__,_|_|  |___/\___/|___/_____/|_____/|_|
+ *
+ * -------------------------------------------------------------
+ *
+ * TarsosDSP is developed by Joren Six at IPEM, University Ghent
+ *
+ * -------------------------------------------------------------
+ *
+ *  Info: http://0110.be/tag/TarsosDSP
+ *  Github: https://github.com/JorenSix/TarsosDSP
+ *  Releases: http://0110.be/releases/TarsosDSP/
+ *
+ *  TarsosDSP includes modified source code by various authors,
+ *  for credits and info, see README.
+ *
+ */
 
 package be.tarsos.dsp.io.android;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.media.AudioRecord;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.util.Log;
+
+import androidx.core.app.ActivityCompat;
 
 import com.arthenica.ffmpegkit.FFmpegKit;
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
@@ -51,7 +55,6 @@ import be.tarsos.dsp.io.UniversalAudioInputStream;
  * @see AudioDispatcher
  */
 public class AudioDispatcherFactory {
-
 	static private final String TAG = "AudioDispatcherFactory";
 	static private int pipe_counter = 1;
 
@@ -67,25 +70,25 @@ public class AudioDispatcherFactory {
 	 *            The size of the overlap (in samples).
 	 * @return A new AudioDispatcher
 	 */
-	public static AudioDispatcher fromDefaultMicrophone(final int sampleRate,
-			final int audioBufferSize, final int bufferOverlap) {
+	public static AudioDispatcher fromDefaultMicrophone(Context context, final int sampleRate,
+														final int audioBufferSize, final int bufferOverlap) {
 		int minAudioBufferSize = AudioRecord.getMinBufferSize(sampleRate,
 				android.media.AudioFormat.CHANNEL_IN_MONO,
 				android.media.AudioFormat.ENCODING_PCM_16BIT);
-		int minAudioBufferSizeInSamples =  minAudioBufferSize/2;
-		if(minAudioBufferSizeInSamples <= audioBufferSize ){
-		AudioRecord audioInputStream = new AudioRecord(
-				MediaRecorder.AudioSource.MIC, sampleRate,
-				android.media.AudioFormat.CHANNEL_IN_MONO,
-				android.media.AudioFormat.ENCODING_PCM_16BIT,
-				audioBufferSize * 2);
-
-		TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(sampleRate, 16,1, true, false);
-		
-		TarsosDSPAudioInputStream audioStream = new AndroidAudioInputStream(audioInputStream, format);
-		//start recording ! Opens the stream.
-		audioInputStream.startRecording();
-		return new AudioDispatcher(audioStream,audioBufferSize,bufferOverlap);
+		int minAudioBufferSizeInSamples = minAudioBufferSize / 2;
+		if (minAudioBufferSizeInSamples <= audioBufferSize) {
+			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+				Log.e("TAG", "RECORD_AUDIO permission not granted can't open microphone");
+				return null;
+			} else {
+				AudioRecord audioInputStream = new AudioRecord(MediaRecorder.AudioSource.MIC, sampleRate, android.media.AudioFormat.CHANNEL_IN_MONO, android.media.AudioFormat.ENCODING_PCM_16BIT, audioBufferSize * 2);
+				TarsosDSPAudioFormat format = new TarsosDSPAudioFormat(sampleRate, 16,1, true, false);
+				TarsosDSPAudioInputStream audioStream = new AndroidAudioInputStream(audioInputStream, format);
+				//start recording ! Opens the stream.
+				audioInputStream.startRecording();
+				Log.d("TAG", "Needed permission is granted listening from microphone");
+				return new AudioDispatcher(audioStream,audioBufferSize,bufferOverlap);
+			}
 		}else{
 			throw new IllegalArgumentException("Buffer size too small should be at least " + (minAudioBufferSize *2));
 		}
@@ -109,20 +112,16 @@ public class AudioDispatcherFactory {
 	 * 			  The number of samples to overlap the current and previous buffer.
 	 * @return A new audioprocessor.
 	 */
-	public static AudioDispatcher fromPipe(Context context, Uri selectedFileUri, final int targetSampleRate, final int audioBufferSize, final int bufferOverlap){
+	public static AudioDispatcher fromPipe(Context context, Uri selectedFileUri, double begin, double duration, final int targetSampleRate, final int audioBufferSize, final int bufferOverlap){
 		String inputFile = FFmpegKitConfig.getSafParameterForRead(context, selectedFileUri);
 		String outputFile = registerNewPipe(context);
 
-		Log.d(TAG, "Pipe output :" + outputFile);
-
-		FFmpegKit.execute("-ss 20 -t 3 -y -i " + inputFile + " -f s16le -acodec pcm_s16le -ar 44100 -ac 1 " + outputFile);
-
-		InputStream inputStream = null;
-		try {
-			inputStream = new FileInputStream(new File(outputFile));
-			Log.d("FILE", "opened");
-		} catch (FileNotFoundException e) {
-			Log.d("FILE", "error");
+		if (duration > 0) {
+			FFmpegKit.execute("-y -ss " + begin + " -t " + duration + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar 44100 -ac 1 " + outputFile);
+			Log.d(TAG, "Read the file from " + begin + "s to " + (duration + begin) + " s");
+		} else {
+			FFmpegKit.execute("-y -ss " + begin + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar 44100 -ac 1 " + outputFile);
+			Log.d(TAG, "Read the file from " + begin + "s to the end");
 		}
 
 		TarsosDSPAudioInputStream audioStream = new UniversalAudioInputStream(outputFile, new TarsosDSPAudioFormat(targetSampleRate, 16, 1, true, false));

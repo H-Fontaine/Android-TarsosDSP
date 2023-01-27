@@ -34,7 +34,8 @@ import java.io.InputStream;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 
 public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
-	
+	private static final String TAG = "UniversalAudioInputStream";
+
 	private final InputStream underlyingStream;
 	private final TarsosDSPAudioFormat format;
 	private final String streamSourcePipe;
@@ -42,10 +43,10 @@ public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 	public UniversalAudioInputStream(String streamSourcePipe, TarsosDSPAudioFormat format){
 		InputStream stream = null;
 		try {
-			stream = new FileInputStream(new File(streamSourcePipe));
-			Log.d("FILE", "opened");
+			stream = new FileInputStream(streamSourcePipe);
+			Log.d(TAG, "FFmpeg result found at : " + streamSourcePipe);
 		} catch (FileNotFoundException e) {
-			Log.d("FILE", "error");
+			Log.e(TAG, "FFmpeg result not found, should have been created at : " + streamSourcePipe);
 		}
 		this.streamSourcePipe = streamSourcePipe;
 		this.underlyingStream = stream;

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 AudioDispatcher adp;
-                adp = AudioDispatcherFactory.fromPipe(MainActivity.this, selectedFileUri,44100,5000,2500);
+                adp = AudioDispatcherFactory.fromPipe(MainActivity.this, selectedFileUri, 5, 5,44100,5000,2500);
                 //adp = AudioDispatcherFactory.fromDefaultMicrophone(22050,1024,0);
                 adp.addAudioProcessor(new AndroidAudioPlayer(adp.getFormat(),6202, AudioManager.STREAM_MUSIC));
                 adp.run();
