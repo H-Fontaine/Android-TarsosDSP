@@ -1,4 +1,12 @@
-!https://github.com/JorenSix/TarsosDSP/actions/workflows/gradle.yml/badge.svg(TarsosDSP build status)!
+h1. Android-TarsosDSP
+
+This is a fork from this "commit":https://github.com/JorenSix/TarsosDSP/commit/d9583528b9573a97c220d19e6d9ab2929e9bd1c5 of the "TarsosDSP library":https://github.com/JorenSix/TarsosDSP, just before removal of android related code. The purpose of this fork is to make the librabry working on android for sdk greaters than 29.
+
+The library is working for those sdk thanks to the "ffmpeg-kit library":https://github.com/arthenica/ffmpeg-kit
+
+
+
+h1. FOLLOWING IS THE README OF THE ORIGINAL PROJECT
 
 h1. TarsosDSP
 
