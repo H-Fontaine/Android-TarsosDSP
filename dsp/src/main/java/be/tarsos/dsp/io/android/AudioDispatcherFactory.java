@@ -117,10 +117,10 @@ public class AudioDispatcherFactory {
 		String outputFile = registerNewPipe(context);
 
 		if (duration > 0) {
-			FFmpegKit.execute("-y -ss " + begin + " -t " + duration + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar 44100 -ac 1 " + outputFile);
+			FFmpegKit.execute("-y -ss " + begin + " -t " + duration + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar " + targetSampleRate + " -ac 1 " + outputFile);
 			Log.d(TAG, "Read the file from " + begin + "s to " + (duration + begin) + " s");
 		} else {
-			FFmpegKit.execute("-y -ss " + begin + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar 44100 -ac 1 " + outputFile);
+			FFmpegKit.execute("-y -ss " + begin + " -i " + inputFile + " -f s16le -acodec pcm_s16le -ar " + targetSampleRate + " -ac 1 " + outputFile);
 			Log.d(TAG, "Read the file from " + begin + "s to the end");
 		}
 
