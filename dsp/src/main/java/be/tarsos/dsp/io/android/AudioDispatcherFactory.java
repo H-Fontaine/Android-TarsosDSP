@@ -102,6 +102,12 @@ public class AudioDispatcherFactory {
 	 * are are captured and interpreted. Examples of executables that can
 	 * convert audio in any format and write to stdout are ffmpeg and avconv.
 	 *
+	 * @param context
+	 * 			  The context from witch comes the Uri path
+	 * @param begin
+	 * 			  Start time from which we read the file in seconds
+	 * @param duration
+	 * 			  Number of seconds read from the start time (begin)
 	 * @param selectedFileUri
 	 *            The file or stream to capture.
 	 * @param targetSampleRate
@@ -112,7 +118,7 @@ public class AudioDispatcherFactory {
 	 * 			  The number of samples to overlap the current and previous buffer.
 	 * @return A new audioprocessor.
 	 */
-	public static AudioDispatcher fromPipe(Context context, Uri selectedFileUri, double begin, double duration, final int targetSampleRate, final int audioBufferSize, final int bufferOverlap){
+	public static AudioDispatcher fromPipe(Context context, Uri selectedFileUri, double begin, double duration, final int targetSampleRate, final int audioBufferSize, final int bufferOverlap) {
 		String inputFile = FFmpegKitConfig.getSafParameterForRead(context, selectedFileUri);
 		String outputFile = registerNewPipe(context);
 
