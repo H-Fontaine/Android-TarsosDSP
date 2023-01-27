@@ -73,4 +73,9 @@ public interface TarsosDSPAudioInputStream {
 	TarsosDSPAudioFormat getFormat();
 
 	long getFrameLength();
+
+	/**
+	 * Destroy the pipe from the created stream
+	 */
+	void destroyPipe();
 }

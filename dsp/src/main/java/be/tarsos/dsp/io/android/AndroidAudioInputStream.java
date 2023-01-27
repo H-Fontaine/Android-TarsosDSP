@@ -34,6 +34,8 @@ public class AndroidAudioInputStream implements TarsosDSPAudioInputStream{
 	private final AudioRecord underlyingStream;
 	private final TarsosDSPAudioFormat format;
 	public AndroidAudioInputStream(AudioRecord underlyingStream, TarsosDSPAudioFormat format){
+
+
 		this.underlyingStream = underlyingStream;
 		this.format = format;
 	}
@@ -64,4 +66,6 @@ public class AndroidAudioInputStream implements TarsosDSPAudioInputStream{
 		return -1;
 	}
 
+	@Override
+	public void destroyPipe() {}
 }

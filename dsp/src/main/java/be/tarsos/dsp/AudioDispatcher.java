@@ -299,6 +299,9 @@ public class AudioDispatcher implements Runnable {
 		if(!stopped){
 			stop();
 		}
+
+		//Destroying the pipe to release memory
+		audioInputStream.destroyPipe();
 	}
 	
 	

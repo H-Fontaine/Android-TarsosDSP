@@ -23,16 +23,32 @@
 
 package be.tarsos.dsp.io;
 
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 
 public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 	
 	private final InputStream underlyingStream;
 	private final TarsosDSPAudioFormat format;
+	private final String streamSourcePipe;
 	
-	public UniversalAudioInputStream(InputStream underlyingInputStream, TarsosDSPAudioFormat format){
-		this.underlyingStream = underlyingInputStream;
+	public UniversalAudioInputStream(String streamSourcePipe, TarsosDSPAudioFormat format){
+		InputStream stream = null;
+		try {
+			stream = new FileInputStream(new File(streamSourcePipe));
+			Log.d("FILE", "opened");
+		} catch (FileNotFoundException e) {
+			Log.d("FILE", "error");
+		}
+		this.streamSourcePipe = streamSourcePipe;
+		this.underlyingStream = stream;
 		this.format = format;
 	}
 
@@ -67,6 +83,11 @@ public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 	@Override
 	public long getFrameLength() {
 		return -1;
+	}
+
+	@Override
+	public void destroyPipe() {
+		AudioDispatcherFactory.closePipe(streamSourcePipe);
 	}
 
 }
