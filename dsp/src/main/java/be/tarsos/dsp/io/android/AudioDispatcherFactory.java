@@ -104,7 +104,7 @@ public class AudioDispatcherFactory {
 	 * @param begin
 	 * 			  Start time from which we read the file in seconds
 	 * @param duration
-	 * 			  Number of seconds read from the start time (begin)
+	 * 			  Number of seconds read from the start time (begin) if negative read the entire file
 	 * @param selectedFileUri
 	 *            The file or stream to capture.
 	 * @param targetSampleRate
