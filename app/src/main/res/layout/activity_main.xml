@@ -10,8 +10,14 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Load file"
-        android:id="@+id/main_activity_load_file_button"/>
+        android:text="Play file"
+        android:id="@+id/main_activity_play_button"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Beat detection"
+        android:id="@+id/maine_activity_beat_detection_button"/>
 
     <TextView
         android:layout_width="match_parent"
