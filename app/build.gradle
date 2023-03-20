@@ -38,4 +38,5 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
     implementation project(':dsp')
+    implementation 'com.arthenica:ffmpeg-kit-full:5.1'
 }

@@ -132,7 +132,7 @@ public class BeatRootSpectralFluxOnsetDetector implements AudioProcessor, OnsetD
 	private final FFT fft;
 
 	/**
-	 * Create anew onset detector
+	 * Create a new onset detector
 	 * @param d the dispatcher
 	 * @param fftSize The size of the fft
 	 * @param hopSize the hop size of audio blocks.
