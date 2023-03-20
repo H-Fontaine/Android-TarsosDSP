@@ -21,6 +21,9 @@ import java.io.IOException;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.beatroot.BeatRootOnsetEventHandler;
+import be.tarsos.dsp.io.TarsosDSPAudioFormat;
+import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
+import be.tarsos.dsp.io.UniversalAudioInputStream;
 import be.tarsos.dsp.io.android.AndroidAudioPlayer;
 import be.tarsos.dsp.io.android.AudioDispatcherFactory;
 import be.tarsos.dsp.onsets.ComplexOnsetDetector;
@@ -134,7 +137,6 @@ public class MainActivity extends AppCompatActivity {
 
         AudioDispatcher dispatcher;
         dispatcher = AudioDispatcherFactory.fromPipe(MainActivity.this, selectedFileUri, 0, -1, 44100, fftsize, fftsize / 2 );
-
         ComplexOnsetDetector detector = new ComplexOnsetDetector(fftsize);
         BeatRootOnsetEventHandler handler = new BeatRootOnsetEventHandler();
         detector.setHandler(handler);

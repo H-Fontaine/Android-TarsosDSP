@@ -37,6 +37,7 @@ import com.arthenica.ffmpegkit.FFmpegKit;
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
 
 import java.io.File;
+import java.io.InputStream;
 
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
@@ -128,6 +129,11 @@ public class AudioDispatcherFactory {
 		}
 
 		TarsosDSPAudioInputStream audioStream = new UniversalAudioInputStream(outputFile, new TarsosDSPAudioFormat(targetSampleRate, 16, 1, true, false));
+		return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
+	}
+
+	public static AudioDispatcher fromInputStream(InputStream stream, final int targetSampleRate, final int sampleSizeInBits, final int number_of_channel, final Boolean signed, final Boolean bigEndian, final int audioBufferSize, final int bufferOverlap) {
+		TarsosDSPAudioInputStream audioStream = new UniversalAudioInputStream(stream, new TarsosDSPAudioFormat(targetSampleRate, sampleSizeInBits, number_of_channel, signed, bigEndian));
 		return new AudioDispatcher(audioStream, audioBufferSize, bufferOverlap);
 	}
 

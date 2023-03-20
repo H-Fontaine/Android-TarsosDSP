@@ -23,6 +23,7 @@
 
 package be.tarsos.dsp.io;
 
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 
 import java.io.File;
@@ -51,6 +52,12 @@ public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 		this.streamSourcePipe = streamSourcePipe;
 		this.underlyingStream = stream;
 		this.format = format;
+	}
+
+	public UniversalAudioInputStream(InputStream stream, TarsosDSPAudioFormat format) {
+		this.format = format;
+		this.underlyingStream = stream;
+		this.streamSourcePipe = null;
 	}
 
 	@Override
@@ -88,7 +95,9 @@ public class UniversalAudioInputStream implements TarsosDSPAudioInputStream {
 
 	@Override
 	public void destroyPipe() {
-		AudioDispatcherFactory.closePipe(streamSourcePipe);
+		if (this.streamSourcePipe != null ){
+			AudioDispatcherFactory.closePipe(streamSourcePipe);
+		}
 	}
 
 }
